@@ -37,11 +37,15 @@ export default function CreatePost() {
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
       <div className="flex justify-center relative">
-
-      <Link to='/' className="text-2xl absolute bg-blue-400 px-2 py-1 rounded-lg left-0 top-0 transition duration-300 hover:bg-blue-500 text-white">Retour</Link>
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        Créer un Post
-      </h1>
+        <Link
+          to="/"
+          className="text-2xl absolute bg-blue-400 px-2 py-1 rounded-lg left-0 top-0 transition duration-300 hover:bg-blue-500 text-white"
+        >
+          Retour
+        </Link>
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Créer un Post
+        </h1>
       </div>
 
       {error && (
@@ -60,15 +64,26 @@ export default function CreatePost() {
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">
-            Contenu
-          </label>
+          <label className="block text-gray-700 font-medium mb-1">Body</label>
           <textarea
             className="w-full border border-gray-300 rounded-md p-2 h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
         </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">
+            Avis
+          </label>
+          <textarea
+            className="w-full border border-gray-300 rounded-md p-2 h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={avis}
+            onChange={(e) => setBody(e.target.value)}
+          />
+        </div>
+
+        
 
         <button
           type="submit"
