@@ -1,7 +1,8 @@
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import PostList from './pages/PostList'
+import CreatePost from './pages/CreatePost';
 
 
 
@@ -10,13 +11,12 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<PostList/>}/>
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PostList />} />
+        <Route path="/create" element={<CreatePost />} />
+      </Routes>
     </>
-  )
+  );
 }
 
 export default App
