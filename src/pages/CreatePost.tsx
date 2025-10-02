@@ -1,41 +1,52 @@
-import React, { useState } from "react";
 import axios from "axios";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
+  const [avis, setAvis] = useState("");
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-
-    if (!title || !body) {
-      setError("Tous les champs sont obligatoires !");
-      setLoading(false);
-      return;
-    }
-
     try {
-      await axios.post("http://127.0.0.1:8000/api/posts", {
-        title,
-        body,
-      });
-      navigate("/"); // redirige vers la liste des posts
-    } catch (err: any) {
-      setError("Erreur lors de la création du post.");
-      console.error(err);
+      await axios.post("http://127.0.0.1:8000/api/posts", { title, avis, body });
+      setMessage({ text: "✅ Post créé avec succès !", type: "success" });
+      setTimeout(() => navigate("/"), 2000); // redirection après 2s
+    } catch (error) {
+      console.error(error);
+      setMessage({ text: "❌ Erreur lors de la création du post", type: "error" });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg relative">
+      {/* Message animé */}
+      <AnimatePresence>
+        {message && (
+          <motion.div
+            key="message"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className={`mb-4 p-3 rounded-md text-center font-semibold ${
+              message.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}
+          >
+            {message.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex justify-center relative">
         <Link
           to="/"
@@ -48,11 +59,7 @@ export default function CreatePost() {
         </h1>
       </div>
 
-      {error && (
-        <p className="text-red-500 mb-4 text-center font-medium">{error}</p>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="block text-gray-700 font-medium mb-1">Titre</label>
           <input
@@ -64,6 +71,16 @@ export default function CreatePost() {
         </div>
 
         <div>
+          <label className="block text-gray-700 font-medium mb-1">Avis</label>
+          <input
+            type="text"
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={avis}
+            onChange={(e) => setAvis(e.target.value)}
+          />
+        </div>
+
+        <div>
           <label className="block text-gray-700 font-medium mb-1">Body</label>
           <textarea
             className="w-full border border-gray-300 rounded-md p-2 h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -71,19 +88,6 @@ export default function CreatePost() {
             onChange={(e) => setBody(e.target.value)}
           />
         </div>
-
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">
-            Avis
-          </label>
-          <textarea
-            className="w-full border border-gray-300 rounded-md p-2 h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={avis}
-            onChange={(e) => setBody(e.target.value)}
-          />
-        </div>
-
-        
 
         <button
           type="submit"
